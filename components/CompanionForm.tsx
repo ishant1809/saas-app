@@ -3,7 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
+import { redirect } from "next/navigation";
+import { createCompanion } from "@/lib/actions/companion.action";
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -30,9 +31,7 @@ const formSchema = z.object({
     topic: z.string().min(1, { message: "Topic is required." }),
     voice: z.string().min(1, { message: "Voice is required." }),
     style: z.string().min(1, { message: "Style is required." }),
-    duration: z.coerce
-        .number()
-        .min(1, { message: "Duration is required." }),
+    duration: z.number().min(1, { message: "Duration is required." }),
 })
 
 const CompanionForm = () => {
@@ -48,9 +47,15 @@ const CompanionForm = () => {
         },
     })
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log("Form submitted:", values)
-        alert(JSON.stringify(values, null, 2))
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        const companion = await createCompanion(values);
+
+        if (companion) {
+            redirect(`/companions/${companion.id}`);
+        } else {
+            console.log('Failed to create a companion');
+            redirect('/');
+        }
     }
 
     return (
@@ -204,6 +209,7 @@ const CompanionForm = () => {
                                     placeholder="15"
                                     className="input"
                                     {...field}
+                                    onChange={(e) => field.onChange(Number(e.target.value))}
                                 />
                             </FormControl>
                             <FormMessage />

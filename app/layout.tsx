@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Geist } from "next/font/google";
 import "./globals.css";
+import "@clerk/ui/themes/shadcn.css";
 import { cn } from "@/lib/utils";
 import Navbar from "../components/navbar";
+import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/ui/themes";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -24,8 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${bricolage.variable} antialiased`}>
-        <Navbar />
-        {children}</body>
+        <ClerkProvider appearance={{ theme: shadcn }}>
+          <Navbar />
+          {children}
+        </ClerkProvider>
+      </body>
     </html>
   );
 }

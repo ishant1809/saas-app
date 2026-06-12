@@ -1,32 +1,11 @@
-import { NavigationMenuList } from "@base-ui/react"
-import Image from "next/image"
-import Link from "next/link"
-
-const navItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Companions', href: '/companions' },
-    { label: 'My Journey', href: 'my-journey' },
-]
-const NavItems = () => {
-    return (
-        <nav className="flex items-center gap-4">
-            {navItems.map(({ label, href }) => (
-                <Link
-                    href={href}
-                    key={label}
-                >
-                    {label}
-                </Link>
-            ))}
-        </nav>
-    )
-}
-
-
+import Link from "next/link";
+import Image from "next/image";
+import { SignInButton, Show, UserButton } from "@clerk/nextjs";
+import NavItems from "@/components/NavItems";
 
 const Navbar = () => {
     return (
-        <nav className="navbar" >
+        <nav className="navbar">
             <Link href="/">
                 <div className="flex items-center gap-2.5 cursor-pointer">
                     <Image
@@ -39,6 +18,14 @@ const Navbar = () => {
             </Link>
             <div className="flex items-center gap-8">
                 <NavItems />
+                <Show when="signed-out">
+                    <SignInButton>
+                        <button className="btn-signin">Sign In</button>
+                    </SignInButton>
+                </Show>
+                <Show when="signed-in">
+                    <UserButton />
+                </Show>
             </div>
         </nav>
     )
